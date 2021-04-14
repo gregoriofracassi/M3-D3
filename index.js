@@ -1,21 +1,33 @@
-const loadResources = () => {
-    fetch('http://www.splashbase.co/api/v1/images/search?query=tree')
-    .then(resp => resp.json())
-    .then(img => {
-    loadCards(img)
-    })
+const loadResources = (keyword) => {
+    fetch(`http://www.splashbase.co/api/v1/images/search?query=${keyword}`)
+        .then(resp => resp.json())
+        .then(img => {
+            loadCards(img)
+        })
 }
 
 const loader = document.querySelector('.loader')
+const secondloader = document.querySelector('.secondloader')
 const rowCards = document.querySelector('.album .row')
 
-loader.onclick = loadResources
+loader.onclick = () => loadResources('tree')
+secondloader.onclick = () => loadResources('flower')
+
+
+const showImagePreview = (event) => {
+    const img = event.currentTarget.parentElement.parentElement.parentElement.previousElementSibling
+    const modalBody = document.querySelector('#exampleModal .modal-body')
+    modalBody.innerHTML = ''
+    modalBody.innerHTML = `<img src="${img.src}" class="img-fluid" alt="">`
+
+}
+
 
 const loadCards = (imgjson) => {
     rowCards.innerHTML = ''
     let images = imgjson.images
-    // console.log(imgjson.images[0].id)
-    images.forEach (
+        // console.log(imgjson.images[0].id)
+    images.forEach(
         im => {
             rowCards.innerHTML += `
             <div class="col-md-4">
@@ -34,7 +46,8 @@ const loadCards = (imgjson) => {
                     <div class="btn-group">
                     <button
                         type="button"
-                        class="btn btn-sm btn-outline-secondary"
+                        class="viewButton btn btn-sm btn-outline-secondary"
+                        data-toggle="modal" data-target="#exampleModal"
                     >
                         View
                     </button>
@@ -53,4 +66,10 @@ const loadCards = (imgjson) => {
             `
         }
     )
+    let viewButton = document.querySelectorAll('.viewButton')
+    for (const b of viewButton) {
+        b.onclick = showImagePreview
+    }
+    //viewButton.onclick = (event) => showImagePreview(event)
+
 }
