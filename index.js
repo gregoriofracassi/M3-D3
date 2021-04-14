@@ -11,7 +11,7 @@ const secondloader = document.querySelector('.secondloader')
 const rowCards = document.querySelector('.album .row')
 
 
-loader.onclick = () => loadResources()
+loader.onclick = () => loadResources('tree')
 secondloader.onclick = () => loadResources(document.querySelector(".search").value)
 
 const showResult = () => {
