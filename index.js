@@ -4,6 +4,7 @@ const loadResources = (keyword) => {
         .then(img => {
             loadCards(img)
         })
+        .catch(err => showError(err.message))
 }
 
 const loader = document.querySelector('.loader')
@@ -11,29 +12,40 @@ const secondloader = document.querySelector('.secondloader')
 const rowCards = document.querySelector('.album .row')
 
 
-loader.onclick = () => loadResources('tree')
+loader.onclick = () => loadResources("tree")
 secondloader.onclick = () => loadResources(document.querySelector(".search").value)
+
+const showError = (message) => {
+    document.querySelector(".alert").classList.remove("d-none")
+    document.querySelector(".alert").classList.add("alert-danger")
+    document.querySelector(".alert-result").innerHTML = message
+}
 
 const showResult = () => {
     setTimeout(() => {
-        console.log("ds");
         document.querySelector(".alert").classList.remove("d-none")
+        document.querySelector(".alert").classList.add("alert-success")
         document.querySelector(".alert-result").innerHTML = `${document.querySelectorAll(".card").length} images have been loaded`
     }, 5000)
 }
 
-
-
-
 const showImagePreview = (event) => {
-    const img = event.currentTarget.parentElement.parentElement.parentElement.previousElementSibling
+    const img = event.currentTarget.closest('.card').querySelector('img')
     const modalBody = document.querySelector('#exampleModal .modal-body')
     modalBody.innerHTML = ''
     modalBody.innerHTML = `<img src="${img.src}" class="img-fluid" alt="">`
 }
 const hideCard = (event) => {
-    const card = event.currentTarget.parentElement.parentElement.parentElement.parentElement
+    const card = event.currentTarget.closest('.card')
     card.classList.add('d-none')
+}
+
+const getId = (images) => {
+    console.log('images:', images)
+    const idArr = images.reduce((acc, image) => {
+        return [...acc, image.id]
+    }, [])
+    console.log(idArr)
 }
 
 
@@ -88,7 +100,46 @@ const loadCards = (imgjson) => {
     for (const b of hideBtn) {
         b.onclick = hideCard
     }
+    getId(images)
     showResult()
         //viewButton.onclick = (event) => showImagePreview(event)
 
+}
+
+
+const getUrl = (images) => {
+    console.log(images.map(image => {
+        return [image.url]
+    }), {})
+}
+
+
+const fillCarousel = () => {
+    const carouselInner = document.querySelector('.image-carousel .carousel-inner')
+    first = true
+    fetch("http://www.splashbase.co/api/v1/images/search?query=forest")
+        .then(response => response.json())
+        .then(body => {
+            getUrl(body.images)
+            body.images.filter((el, i) => {
+
+                if (el.site !== "unsplash") {
+                    if (first) {
+                        carouselInner.innerHTML += `<div class="carousel-item active">
+                        <img src="${el.url}" class="d-block w-100" alt="...">
+                    </div>`
+                        first = false
+                    } else {
+                        carouselInner.innerHTML += `<div class="carousel-item">
+                        <img src="${el.url}" class="d-block w-100" alt="...">
+                    </div>`
+                    }
+                }
+            })
+        })
+
+}
+
+window.onload = () => {
+    fillCarousel()
 }
