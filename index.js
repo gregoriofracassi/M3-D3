@@ -19,7 +19,10 @@ const showImagePreview = (event) => {
     const modalBody = document.querySelector('#exampleModal .modal-body')
     modalBody.innerHTML = ''
     modalBody.innerHTML = `<img src="${img.src}" class="img-fluid" alt="">`
-
+}
+const hideCard = (event) => {
+    const card = event.currentTarget.parentElement.parentElement.parentElement.parentElement
+    card.classList.add('d-none')
 }
 
 
@@ -53,12 +56,12 @@ const loadCards = (imgjson) => {
                     </button>
                     <button
                         type="button"
-                        class="btn btn-sm btn-outline-secondary"
+                        class="btn btn-sm btn-outline-secondary hider"
                     >
-                        Edit
+                        Hide
                     </button>
                     </div>
-                    <small class="text-muted">9 mins</small>
+                    <small class="text-muted">${im.id}</small>
                 </div>
                 </div>
             </div>
@@ -69,6 +72,10 @@ const loadCards = (imgjson) => {
     let viewButton = document.querySelectorAll('.viewButton')
     for (const b of viewButton) {
         b.onclick = showImagePreview
+    }
+    let hideBtn = document.querySelectorAll('.hider')
+    for (const b of hideBtn) {
+        b.onclick = hideCard
     }
     //viewButton.onclick = (event) => showImagePreview(event)
 
