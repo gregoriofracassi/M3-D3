@@ -10,8 +10,19 @@ const loader = document.querySelector('.loader')
 const secondloader = document.querySelector('.secondloader')
 const rowCards = document.querySelector('.album .row')
 
-loader.onclick = () => loadResources('tree')
-secondloader.onclick = () => loadResources('flower')
+
+loader.onclick = () => loadResources()
+secondloader.onclick = () => loadResources(document.querySelector(".search").value)
+
+const showResult = () => {
+    setTimeout(() => {
+        console.log("ds");
+        document.querySelector(".alert").classList.remove("d-none")
+        document.querySelector(".alert-result").innerHTML = `${document.querySelectorAll(".card").length} images have been loaded`
+    }, 5000)
+}
+
+
 
 
 const showImagePreview = (event) => {
@@ -77,6 +88,7 @@ const loadCards = (imgjson) => {
     for (const b of hideBtn) {
         b.onclick = hideCard
     }
-    //viewButton.onclick = (event) => showImagePreview(event)
+    showResult()
+        //viewButton.onclick = (event) => showImagePreview(event)
 
 }
