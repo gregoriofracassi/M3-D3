@@ -4,7 +4,7 @@ const loadResources = (keyword) => {
         .then(img => {
             loadCards(img)
         })
-        .catch(err => showError(err.message))
+        .catch(err => showAlert("alert-danger", "Error", err.message))
 }
 
 const loader = document.querySelector('.loader')
@@ -15,22 +15,24 @@ const rowCards = document.querySelector('.album .row')
 loader.onclick = () => loadResources("tree")
 secondloader.onclick = () => loadResources(document.querySelector(".search").value)
 
-const showError = (message) => {
-    document.querySelector(".alert").classList.remove("d-none")
-    document.querySelector(".alert").classList.add("alert-danger")
-    document.querySelector(".alert-result").innerHTML = message
+const showAlert = (type, header, message) => {
+    const alertContainer = document.querySelector('.alert-container')
+    alertContainer.innerHTML =
+        `<div class="alert ${type} position-absolute alert-dismissible" role="alert" style="z-index: 1;
+    top: 50px;">
+    <h4 class="alert-heading">${header}</h4>
+    <hr>
+    <p class="alert-result mb-0 mr-3">${message}</p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>`
 }
 
-const showResult = () => {
-    setTimeout(() => {
-        document.querySelector(".alert").classList.remove("d-none")
-        document.querySelector(".alert").classList.add("alert-success")
-        document.querySelector(".alert-result").innerHTML = `${document.querySelectorAll(".card").length} images have been loaded`
-    }, 5000)
-}
 
 const showImagePreview = (event) => {
     const img = event.currentTarget.closest('.card').querySelector('img')
+    console.log('img:', img)
     const modalBody = document.querySelector('#exampleModal .modal-body')
     modalBody.innerHTML = ''
     modalBody.innerHTML = `<img src="${img.src}" class="img-fluid" alt="">`
@@ -43,7 +45,7 @@ const hideCard = (event) => {
 const getId = (images) => {
     console.log('images:', images)
     const idArr = images.reduce((acc, image) => {
-        return [...acc, image.id]
+        return [...acc, image.id] //how does this works?
     }, [])
     console.log(idArr)
 }
@@ -101,7 +103,9 @@ const loadCards = (imgjson) => {
         b.onclick = hideCard
     }
     getId(images)
-    showResult()
+    setTimeout(() => {
+            showAlert("alert-success", "Info", `${document.querySelectorAll(".card").length} images have been loaded`)
+        }, 5000)
         //viewButton.onclick = (event) => showImagePreview(event)
 
 }
